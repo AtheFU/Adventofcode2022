@@ -1,0 +1,72 @@
+<html>
+<head> 
+	<title>Advent of Code - Day 1</title>
+</head>
+<body>
+	
+	
+	<!- Eingabeformular ->
+	<form id="myForm">
+		<label for="calories">Calories:</label>
+		
+		<textarea id="calories" name="calories" rows="10" cols="5"></textarea>
+		
+		<input type="submit" value="Submit" />
+	</form>
+  
+  <script>
+	const myForm = document.getElementById("myForm");
+	const formCalories = document.getElementById("calories");
+
+	myForm.addEventListener("submit", function (e) {
+		e.preventDefault(); // Submit soll sonst nix machen.
+		
+		var calories = formCalories.value; // Get content of textarea
+		
+		calories = calories.replaceAll(/(\r\n \r\n|\n \n|\r \r)/gm, "\"]},%n%\t{\"calories\":[\"");
+		calories = calories.replaceAll(/(\r\n|\n|\r)/gm, "\",\"");
+		calories = "{%n%\"Elfs\":[%n%\t{\"calories\":[\"" + calories + "\"]}%n%\t]%n%}";
+		calJSON = calories.replaceAll(/%n%/gm, "\n");
+	  
+	  	/*
+		document.write("JSON:<pre>");
+		document.write(calJSON);
+		document.write("</pre");
+		*/
+		
+	  	var calObj = JSON.parse(calJSON);
+		  
+		document.write("<p>We found ", calObj.Elfs.length, " Elfs.</p><p>");
+			  	
+		var totalSum = 0;
+		var max = 0;
+		var maxElf = 0;
+		
+		for(var i = 0; i < calObj.Elfs.length; i++)  {
+						
+			var sum = 0;
+			for (var j = 0; j < calObj.Elfs[i].calories.length; j++) {
+				
+				var energy = parseInt("0"+calObj.Elfs[i].calories[j]);
+				sum = sum + energy;
+			}
+			
+			document.write("Elf #", i, " has ", j, " packets with a total of ", sum, " calories. <br>");
+			
+			// Who's got the most?
+			if (sum > max) {
+				max = sum;
+				maxElf = i;
+			}
+			
+						
+		}
+
+		document.write("</p><p>Elf #", maxElf, " with ", max, " calories has the most.</p>");
+
+	});
+	
+  </script>
+
+</body>
+</html>
